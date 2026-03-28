@@ -1,0 +1,18 @@
+{
+  "name": "humanlayer-marketplace",
+  "owner": {
+    "name": "humanlayer",
+    "url": "https://github.com/humanlayer/humanlayer"
+  },
+  "metadata": {
+    "description": "HumanLayer AI agent workflows — planning, research, implementation, debugging, and session handoff commands with specialized subagents",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "humanlayer-workflows",
+      "description": "Complete AI agent workflow toolkit: implementation planning, codebase research, plan execution/validation, git commits, PR descriptions, debugging, session handoffs, and Linear ticket management. Includes 6 specialized subagents for code analysis, pattern finding, document research, and web search.",
+      "source": "./plugins/humanlayer-workflows"
+    }
+  ]
+}

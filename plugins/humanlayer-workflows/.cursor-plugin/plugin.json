@@ -1,0 +1,9 @@
+{
+  "name": "humanlayer-workflows",
+  "version": "1.0.0",
+  "description": "Complete AI agent workflow toolkit: implementation planning, codebase research, plan execution/validation, git commits, PR descriptions, debugging, session handoffs, and Linear ticket management. Includes 6 specialized subagents for code analysis, pattern finding, document research, and web search.",
+  "author": {
+    "name": "HumanLayer"
+  },
+  "keywords": ["workflows", "planning", "research", "debugging", "handoff", "subagents", "linear"]
+}

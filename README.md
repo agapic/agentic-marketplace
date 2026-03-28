@@ -1,7 +1,7 @@
-# HumanLayer Marketplace
+# Agentic Marketplace
 
 AI agent workflows for Claude Code and Cursor — implementation planning, codebase research, debugging, session handoffs, and more.
-Fork from https://github.com/humanlayer/humanlayer that makes it easy to add as a marketplace.
+Much is imported from humanlayer, but there is other stuff I use too.
 
 ## What's Included
 

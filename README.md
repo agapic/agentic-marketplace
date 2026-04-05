@@ -83,7 +83,7 @@ Run the install script:
 ./install-cursor.sh --project
 ```
 
-This copies commands to `~/.cursor/commands/`, agents to `~/.cursor/agents/`, and scripts to `~/.cursor/scripts/`.
+This copies commands to `~/.cursor/commands/`, agents to `~/.cursor/agents/`, scripts to `~/.cursor/scripts/`, and the `ui-ux-pro-max` skill to `~/.cursor/skills/ui-ux-pro-max/` (use `./install-cursor.sh --project` for the same paths under the project’s `.cursor/`).
 
 ### Plugin: `ui-ux-pro-max`
 

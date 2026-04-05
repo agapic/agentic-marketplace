@@ -111,12 +111,12 @@ This copies commands to `~/.cursor/commands/`, agents to `~/.cursor/agents/`, an
 
 | Path | Description |
 |------|-------------|
-| `SKILL.md` | Full skill instructions with quick reference and workflow |
-| `scripts/search.py` | CLI search tool for domains, design systems, and stacks |
-| `scripts/core.py` | Core search engine |
-| `scripts/design_system.py` | Design system generator with reasoning rules |
-| `data/*.csv` | Design data: styles, colors, typography, products, UX, charts, and more |
-| `data/stacks/*.csv` | Stack-specific guidelines (React Native, Next.js, SwiftUI, Flutter, etc.) |
+| `skills/ui-ux-pro-max/SKILL.md` | Full skill instructions with quick reference and workflow |
+| `skills/ui-ux-pro-max/scripts/search.py` | CLI search tool for domains, design systems, and stacks |
+| `skills/ui-ux-pro-max/scripts/core.py` | Core search engine |
+| `skills/ui-ux-pro-max/scripts/design_system.py` | Design system generator with reasoning rules |
+| `skills/ui-ux-pro-max/data/*.csv` | Design data: styles, colors, typography, products, UX, charts, and more |
+| `skills/ui-ux-pro-max/data/stacks/*.csv` | Stack-specific guidelines (React Native, Next.js, SwiftUI, Flutter, etc.) |
 
 ## Notes
 

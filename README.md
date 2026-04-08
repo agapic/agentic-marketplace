@@ -1,11 +1,62 @@
 # Agentic Marketplace
 
 AI agent workflows for Claude Code and Cursor — implementation planning, codebase research, debugging, session handoffs, and more.
-Much is imported from humanlayer, but there is other stuff I use too.
+
+## Plugins
+
+| Plugin | Commands | Agents | Description |
+|--------|----------|--------|-------------|
+| `spec-driven` | 12 | 4 | **Recommended.** Generic spec-driven workflow. No issue tracker dependency, cross-tool. |
+| `humanlayer-workflows` | 27 | 6 | Legacy. Includes thoughts/ sync, Linear integration, game-specific content. |
+| `ui-ux-pro-max` | — | — | UI/UX design intelligence (independent). |
 
 ## What's Included
 
-### Plugin: `humanlayer-workflows`
+### Plugin: `spec-driven` (recommended)
+
+**12 Commands** — generic, cross-tool agent workflow:
+
+| Command | Description |
+|---------|-------------|
+| `/plan` | Create or iterate spec + phased implementation plan (adaptive depth) |
+| `/implement` | Execute plan phase by phase with spec echo and verification |
+| `/verify` | Run acceptance checks and cross-check completeness |
+| `/investigate` | Evidence-first diagnosis — hypotheses before patches |
+| `/commit` | Atomic git commits with user approval |
+| `/pr` | Generate PR descriptions enriched from specs |
+| `/research` | Deep parallel codebase exploration using sub-agents |
+| `/invariants` | Analyze codebase for correctness rules |
+| `/tests` | Generate high-quality tests from invariants |
+| `/handoff` | Write structured session handoff to specs/ |
+| `/resume` | Restore context from spec artifacts |
+| `/bootstrap` | Scaffold new repo to agent-ready state |
+
+**4 Subagents:**
+
+| Agent | Description |
+|-------|-------------|
+| `codebase-analyzer` | Deep-dive into HOW code works with file:line references |
+| `codebase-locator` | Find WHERE code lives — super grep/glob/ls |
+| `codebase-pattern-finder` | Find existing patterns and code examples |
+| `web-search-researcher` | Find up-to-date information from the web |
+
+**2 Always-On Rules** (`.mdc`):
+
+| Rule | Purpose |
+|------|---------|
+| `agent-discipline.mdc` | Spec echo before changes, evidence-backed claims, escalation rules |
+| `verification-after-edit.mdc` | Auto-detect and run fast verification after code edits |
+
+**4 Templates** (`specs/_templates/`):
+
+| Template | Purpose |
+|----------|---------|
+| `spec.md` | IntentSpec YAML: objective, outcomes, constraints, edge cases |
+| `tasks.md` | Phased plan with automated + manual success criteria |
+| `acceptance.md` | Required checks and manual verification steps |
+| `handoff.md` | Session transition: status, open issues, next action |
+
+### Plugin: `humanlayer-workflows` (legacy)
 
 **27 Commands** (slash commands invoked with `/`):
 
@@ -83,7 +134,7 @@ Run the install script:
 ./install-cursor.sh --project
 ```
 
-This copies commands to `~/.cursor/commands/`, agents to `~/.cursor/agents/`, and scripts to `~/.cursor/scripts/`.
+This copies commands to `~/.cursor/commands/`, agents to `~/.cursor/agents/`, rules to `~/.cursor/rules/`, scripts to `~/.cursor/scripts/`, and skills to `~/.cursor/skills/`.
 
 ### Plugin: `ui-ux-pro-max`
 

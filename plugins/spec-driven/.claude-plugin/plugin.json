@@ -1,0 +1,5 @@
+{
+  "name": "spec-driven",
+  "version": "1.0.0",
+  "description": "Spec-driven agent workflow: 12 commands for planning, implementation, verification, investigation, and session continuity. Generic and cross-tool (Claude Code + Cursor)."
+}

@@ -17,7 +17,7 @@ else
   echo "Installing globally to: ${TARGET}/"
 fi
 
-mkdir -p "${TARGET}/commands" "${TARGET}/agents" "${TARGET}/scripts" "${TARGET}/skills"
+mkdir -p "${TARGET}/commands" "${TARGET}/agents" "${TARGET}/scripts" "${TARGET}/skills" "${TARGET}/rules"
 
 shopt -s nullglob
 
@@ -25,6 +25,7 @@ total_commands=0
 total_agents=0
 total_shell_scripts=0
 total_skills=0
+total_rules=0
 
 for manifest in "${PLUGINS_ROOT}"/*/.cursor-plugin/plugin.json; do
   plugin_dir="$(dirname "$(dirname "$manifest")")"
@@ -49,6 +50,11 @@ for manifest in "${PLUGINS_ROOT}"/*/.cursor-plugin/plugin.json; do
     total_shell_scripts=$((total_shell_scripts + 1))
   done
 
+  for f in "${plugin_dir}/rules/"*.mdc; do
+    cp -f "$f" "${TARGET}/rules/"
+    total_rules=$((total_rules + 1))
+  done
+
   if [[ -f "${plugin_dir}/SKILL.md" ]]; then
     skill_dest="${TARGET}/skills/${name}"
     rm -rf "${skill_dest}"
@@ -59,6 +65,7 @@ for manifest in "${PLUGINS_ROOT}"/*/.cursor-plugin/plugin.json; do
     done
     [[ -d "${plugin_dir}/scripts" ]] && cp -a "${plugin_dir}/scripts" "${skill_dest}/"
     [[ -d "${plugin_dir}/data" ]] && cp -a "${plugin_dir}/data" "${skill_dest}/"
+    [[ -d "${plugin_dir}/templates" ]] && cp -a "${plugin_dir}/templates" "${skill_dest}/"
     if [[ -d "${skill_dest}/scripts" ]]; then
       find "${skill_dest}/scripts" -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
     fi
@@ -68,7 +75,7 @@ for manifest in "${PLUGINS_ROOT}"/*/.cursor-plugin/plugin.json; do
 done
 
 echo ""
-echo "Installed: ${total_commands} commands, ${total_agents} agents, ${total_shell_scripts} shell scripts, ${total_skills} skills"
+echo "Installed: ${total_commands} commands, ${total_agents} agents, ${total_rules} rules, ${total_shell_scripts} shell scripts, ${total_skills} skills"
 echo ""
 echo "Commands (type / in Cursor chat):"
 for f in "${TARGET}/commands/"*.md; do
@@ -79,6 +86,13 @@ echo "Agents available (auto-delegated by Task tool):"
 for f in "${TARGET}/agents/"*.md; do
   echo "  $(basename "$f" .md)"
 done
+if [[ "${total_rules}" -gt 0 ]]; then
+  echo ""
+  echo "Rules (always-on in .cursor/rules/):"
+  for f in "${TARGET}/rules/"*.mdc; do
+    echo "  $(basename "$f")"
+  done
+fi
 if [[ "${total_skills}" -gt 0 ]]; then
   echo ""
   echo "Skills (see ~/.cursor/skills/ or .cursor/skills/):"

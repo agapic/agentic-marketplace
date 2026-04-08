@@ -1,0 +1,24 @@
+---
+description: Automatically run fast verification after editing code files
+globs:
+alwaysApply: true
+---
+
+# Verification After Edit
+
+After editing code files, find and run the project's fast verification command.
+
+## Detection Order
+
+1. `package.json` → `scripts.typecheck` (run it) or `scripts.verify`
+2. `Makefile` → `check` target
+3. `Cargo.toml` → `cargo check`
+4. `go.mod` → `go vet`
+5. `pyproject.toml` → `ruff check` or `mypy`
+
+## Rules
+
+- Run the fastest available check after substantive code edits
+- If verification fails, fix the issue before reporting done
+- Show the command run and its exit code
+- For multi-package repos, run verification in the package you edited (e.g., `cd prototype && pnpm typecheck`)

@@ -39,14 +39,17 @@ If `scripts.verify` exists, prefer it. Otherwise compose from available scripts.
 **Always prefix with `rtk`** — suppresses passing output, surfaces only failures:
 
 ```bash
-rtk tsc                  # TypeScript check (83% reduction)
+rtk pnpm typecheck       # Delegates to tsc filter (83% reduction)
 rtk lint                 # ESLint/Biome (84% reduction)
-rtk next build           # Next.js build — NOT rtk pnpm build (87% reduction)
 rtk cargo test           # Rust (90% reduction)
 rtk vitest run           # Vitest (99% reduction)
 ```
 
-**Important:** use the underlying tool directly with `rtk`, not `rtk pnpm build` or `rtk pnpm run verify`. RTK filters the tool itself — the pnpm wrapper bypasses it.
+For commands RTK can't filter (e.g. `pnpm build`), redirect output and check exit code:
+```bash
+pnpm build > /tmp/build.log 2>&1; echo "exit: $?"
+```
+One line on pass. Read the log only on failure.
 
 ---
 

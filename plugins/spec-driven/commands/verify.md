@@ -39,13 +39,14 @@ If `scripts.verify` exists, prefer it. Otherwise compose from available scripts.
 **Always prefix with `rtk`** — suppresses passing output, surfaces only failures:
 
 ```bash
-rtk pnpm run verify      # preferred if scripts.verify exists
-rtk tsc                  # TypeScript check
-rtk lint                 # ESLint/Biome
-rtk next build           # Next.js build
-rtk cargo test           # Rust
-rtk vitest run           # Vitest
+rtk tsc                  # TypeScript check (83% reduction)
+rtk lint                 # ESLint/Biome (84% reduction)
+rtk next build           # Next.js build — NOT rtk pnpm build (87% reduction)
+rtk cargo test           # Rust (90% reduction)
+rtk vitest run           # Vitest (99% reduction)
 ```
+
+**Important:** use the underlying tool directly with `rtk`, not `rtk pnpm build` or `rtk pnpm run verify`. RTK filters the tool itself — the pnpm wrapper bypasses it.
 
 ---
 

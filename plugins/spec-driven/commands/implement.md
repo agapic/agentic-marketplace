@@ -33,21 +33,6 @@ Before starting implementation, detect the project's verification commands:
 
 If `scripts.verify` exists, prefer it (it likely bundles everything). Store the detected commands — run them after each phase.
 
-**Always prefix verification commands with `rtk`** to suppress passing output and only surface failures:
-
-```bash
-rtk pnpm typecheck       # Delegates to tsc filter (83% reduction)
-rtk lint                 # ESLint/Biome (84% reduction)
-rtk cargo test           # Rust tests (90% reduction)
-rtk vitest run           # Vitest (99% reduction)
-```
-
-For commands RTK can't filter (e.g. `pnpm build`), redirect output and check exit code:
-```bash
-pnpm build > /tmp/build.log 2>&1; echo "exit: $?"
-```
-One line on pass. Read the log only on failure. Never pipe raw build output into context.
-
 ## Spec Echo (Mandatory)
 
 Before writing any code for a phase, restate your intent:

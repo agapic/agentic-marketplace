@@ -36,21 +36,6 @@ Detect the project's verification commands:
 
 If `scripts.verify` exists, prefer it. Otherwise compose from available scripts.
 
-**Always prefix with `rtk`** — suppresses passing output, surfaces only failures:
-
-```bash
-rtk pnpm typecheck       # Delegates to tsc filter (83% reduction)
-rtk lint                 # ESLint/Biome (84% reduction)
-rtk cargo test           # Rust (90% reduction)
-rtk vitest run           # Vitest (99% reduction)
-```
-
-For commands RTK can't filter (e.g. `pnpm build`), redirect output and check exit code:
-```bash
-pnpm build > /tmp/build.log 2>&1; echo "exit: $?"
-```
-One line on pass. Read the log only on failure.
-
 ---
 
 ## Mode: Full

@@ -1,55 +1,119 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Install HumanLayer marketplace plugins into Cursor: humanlayer-workflows
-# (commands, agents, shell scripts) and ui-ux-pro-max (agent skill + data).
+# Install all marketplace plugins into Cursor (anything under plugins/* with .cursor-plugin/plugin.json).
+# Supports flat skill layout (SKILL.md at plugin root) and nested layout (skills/<name>/SKILL.md).
 # Usage:
 #   ./install-cursor.sh              # Install globally (~/.cursor/)
 #   ./install-cursor.sh --project    # Install into current project (.cursor/)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PLUGIN_DIR="${SCRIPT_DIR}/plugins/humanlayer-workflows"
-UI_UX_SKILL_SRC="${SCRIPT_DIR}/plugins/ui-ux-pro-max/skills/ui-ux-pro-max"
+PLUGINS_ROOT="${SCRIPT_DIR}/plugins"
 
 if [[ "${1:-}" == "--project" ]]; then
-  TARGET=".cursor"
-  echo "Installing to project: $(pwd)/.cursor/"
+  TARGET="$(pwd)/.cursor"
+  echo "Installing to project: ${TARGET}/"
 else
-  TARGET="$HOME/.cursor"
-  echo "Installing globally to: ~/.cursor/"
+  TARGET="${HOME}/.cursor"
+  echo "Installing globally to: ${TARGET}/"
 fi
 
-mkdir -p "${TARGET}/commands" "${TARGET}/agents" "${TARGET}/scripts" "${TARGET}/skills"
+mkdir -p "${TARGET}/commands" "${TARGET}/agents" "${TARGET}/scripts" "${TARGET}/skills" "${TARGET}/rules"
 
-echo "Copying commands..."
-cp "${PLUGIN_DIR}/commands/"*.md "${TARGET}/commands/"
+shopt -s nullglob
 
-echo "Copying agents..."
-cp "${PLUGIN_DIR}/agents/"*.md "${TARGET}/agents/"
+total_commands=0
+total_agents=0
+total_shell_scripts=0
+total_skills=0
+total_rules=0
 
-echo "Copying scripts..."
-cp "${PLUGIN_DIR}/scripts/"*.sh "${TARGET}/scripts/"
-chmod +x "${TARGET}/scripts/"*.sh
+for manifest in "${PLUGINS_ROOT}"/*/.cursor-plugin/plugin.json; do
+  plugin_dir="$(dirname "$(dirname "$manifest")")"
+  name="$(basename "$plugin_dir")"
 
-echo "Copying skill ui-ux-pro-max..."
-rm -rf "${TARGET}/skills/ui-ux-pro-max"
-cp -R "${UI_UX_SKILL_SRC}" "${TARGET}/skills/"
+  echo ""
+  echo "Plugin: ${name}"
 
-COMMANDS=$(ls -1 "${PLUGIN_DIR}/commands/"*.md | wc -l | tr -d ' ')
-AGENTS=$(ls -1 "${PLUGIN_DIR}/agents/"*.md | wc -l | tr -d ' ')
-SCRIPTS=$(ls -1 "${PLUGIN_DIR}/scripts/"*.sh | wc -l | tr -d ' ')
+  for f in "${plugin_dir}/commands/"*.md; do
+    cp "$f" "${TARGET}/commands/"
+    total_commands=$((total_commands + 1))
+  done
+
+  for f in "${plugin_dir}/agents/"*.md; do
+    cp "$f" "${TARGET}/agents/"
+    total_agents=$((total_agents + 1))
+  done
+
+  for f in "${plugin_dir}/scripts/"*.sh; do
+    cp "$f" "${TARGET}/scripts/"
+    chmod +x "${TARGET}/scripts/$(basename "$f")"
+    total_shell_scripts=$((total_shell_scripts + 1))
+  done
+
+  for f in "${plugin_dir}/rules/"*.mdc; do
+    cp -f "$f" "${TARGET}/rules/"
+    total_rules=$((total_rules + 1))
+  done
+
+  # Flat layout: SKILL.md at plugin root
+  if [[ -f "${plugin_dir}/SKILL.md" ]]; then
+    skill_dest="${TARGET}/skills/${name}"
+    rm -rf "${skill_dest}"
+    mkdir -p "${skill_dest}"
+    cp "${plugin_dir}/SKILL.md" "${skill_dest}/"
+    for extra in reference.md examples.md; do
+      [[ -f "${plugin_dir}/${extra}" ]] && cp "${plugin_dir}/${extra}" "${skill_dest}/"
+    done
+    [[ -d "${plugin_dir}/scripts" ]] && cp -a "${plugin_dir}/scripts" "${skill_dest}/"
+    [[ -d "${plugin_dir}/data" ]] && cp -a "${plugin_dir}/data" "${skill_dest}/"
+    [[ -d "${plugin_dir}/templates" ]] && cp -a "${plugin_dir}/templates" "${skill_dest}/"
+    if [[ -d "${skill_dest}/scripts" ]]; then
+      find "${skill_dest}/scripts" -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
+    fi
+    total_skills=$((total_skills + 1))
+    echo "  Skill → ${skill_dest}"
+  fi
+
+  # Nested layout: skills/<skill-name>/SKILL.md
+  for skill_src in "${plugin_dir}/skills/"*/; do
+    [[ -f "${skill_src}/SKILL.md" ]] || continue
+    skill_name="$(basename "$skill_src")"
+    skill_dest="${TARGET}/skills/${skill_name}"
+    rm -rf "${skill_dest}"
+    cp -a "${skill_src}" "${skill_dest}"
+    if [[ -d "${skill_dest}/scripts" ]]; then
+      find "${skill_dest}/scripts" -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod +x {} +
+    fi
+    total_skills=$((total_skills + 1))
+    echo "  Skill → ${skill_dest}"
+  done
+done
 
 echo ""
-echo "Installed: ${COMMANDS} commands, ${AGENTS} agents, ${SCRIPTS} scripts, skill ui-ux-pro-max"
+echo "Installed: ${total_commands} commands, ${total_agents} agents, ${total_rules} rules, ${total_shell_scripts} shell scripts, ${total_skills} skills"
 echo ""
-echo "Commands available (type / in Cursor chat):"
-for f in "${PLUGIN_DIR}/commands/"*.md; do
-  name=$(basename "$f" .md)
-  echo "  /${name}"
+echo "Commands (type / in Cursor chat):"
+for f in "${TARGET}/commands/"*.md; do
+  echo "  /$(basename "$f" .md)"
 done
 echo ""
 echo "Agents available (auto-delegated by Task tool):"
-for f in "${PLUGIN_DIR}/agents/"*.md; do
-  name=$(basename "$f" .md)
-  echo "  ${name}"
+for f in "${TARGET}/agents/"*.md; do
+  echo "  $(basename "$f" .md)"
 done
+if [[ "${total_rules}" -gt 0 ]]; then
+  echo ""
+  echo "Rules (always-on in .cursor/rules/):"
+  for f in "${TARGET}/rules/"*.mdc; do
+    echo "  $(basename "$f")"
+  done
+fi
+if [[ "${total_skills}" -gt 0 ]]; then
+  echo ""
+  echo "Skills (see ~/.cursor/skills/ or .cursor/skills/):"
+  for d in "${TARGET}/skills/"*/; do
+    [[ -d "$d" ]] || continue
+    echo "  $(basename "$d")"
+  done
+fi

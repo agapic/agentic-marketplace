@@ -1,0 +1,41 @@
+---
+description: Core agent discipline — spec echo, evidence-backed claims, escalation, context rotation
+globs:
+alwaysApply: true
+---
+
+# Agent Discipline
+
+## Before Non-Trivial Changes
+
+- Restate what you're about to do and why before making changes
+- If changing more than 3 files, list them first and wait for acknowledgment
+- For spec-driven work, reference the spec slug and phase
+
+## "Done" Means Proven
+
+- Verification commands must pass (detect from project: package.json, Makefile, Cargo.toml, pyproject.toml, go.mod)
+- When claiming "tests pass" — cite the command run and exit code
+- When claiming "deploy works" — cite the URL checked and HTTP status
+- When claiming "bug is fixed" — cite reproduction steps and verification output
+- When claiming a domain fact — cite the source file and line
+
+## Escalation
+
+- If stuck after 3 attempts at the same problem, stop and report what you've tried
+- Never delete user files without explicit permission
+- Never skip verification steps
+- If a spec exists for the current work, read it before making changes
+
+## Context Rotation
+
+- If the session has been running for a long time and responses are getting less precise, suggest a handoff: "This session is getting long. Want me to create a /handoff so a fresh session can continue with full context?"
+- Always prefer writing findings to specs/ over keeping them only in chat
+- When investigating, record evidence in specs/<slug>/research.md rather than only narrating it
+
+## Parallel Agent Discipline
+
+When spawning parallel sub-agents:
+- Each agent gets a fixed spec, a fixed set of files, and exit-code success criteria
+- Do not run parallel agents on overlapping file sets
+- Prefer narrow, bounded tasks: "verify this specific function works" over "improve the module"

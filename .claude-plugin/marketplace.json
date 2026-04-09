@@ -18,6 +18,11 @@
       "name": "ui-ux-pro-max",
       "description": "UI/UX design intelligence for web and mobile. Includes 50+ styles, 161 color palettes, 57 font pairings, 161 product types, 99 UX guidelines, and 25 chart types across 10 stacks. Searchable database with priority-based recommendations.",
       "source": "./plugins/ui-ux-pro-max"
+    },
+    {
+      "name": "spec-driven",
+      "description": "Spec-driven agent workflow: 12 commands for planning, implementation, verification, investigation, and session continuity. Generic, cross-tool (Claude Code + Cursor). Includes 4 specialized subagents, 2 always-on rules, and 4 spec templates.",
+      "source": "./plugins/spec-driven"
     }
   ]
 }
